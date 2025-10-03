@@ -38,11 +38,11 @@ app = FastAPI(title="Secure Code Assistant LLM Server")
 # ------------------------
 print(f"[INFO] Loading tokenizer and model from HuggingFace: {HF_MODEL_NAME} ...")
 try:
-    tokenizer = AutoTokenizer.from_pretrained(HF_MODEL_NAME, use_auth_token=HF_TOKEN)
+    tokenizer = AutoTokenizer.from_pretrained(HF_MODEL_NAME, token=HF_TOKEN)
     model = AutoModelForCausalLM.from_pretrained(
         HF_MODEL_NAME,
-        torch_dtype=torch.float16 if USE_FP16 and DEVICE=="cuda" else torch.float32,
-        use_auth_token=HF_TOKEN
+        torch_dtype=torch.float16 if USE_FP16 and DEVICE == "cuda" else torch.float32,
+        token=HF_TOKEN
     )
     model.to(DEVICE)
     print(f"[INFO] Model loaded on {DEVICE}.")
@@ -72,8 +72,19 @@ def generate_code(req: GenerateRequest):
         raise HTTPException(status_code=500, detail=f"Generation failed: {e}")
 
 # ------------------------
+# API Endpoint: Health Check
+# ------------------------
+@app.get("/health")
+def health():
+    """
+    Simple health check endpoint to verify the server is running.
+    """
+    return {"status": "ok", "device": DEVICE, "model": HF_MODEL_NAME}
+
+# ------------------------
 # Run Server
 # ------------------------
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("server.llm_server:app", host="0.0.0.0", port=8000, reload=True)
+    # Bind to IPv6 (::) instead of IPv4 (0.0.0.0)
+    uvicorn.run("server.llm_server:app", host="::", port=8000, reload=True)
