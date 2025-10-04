@@ -1,0 +1,7 @@
+Database created and sample users inserted.
+
+Running SQL (vulnerable): SELECT id, username FROM users WHERE username = 'alice'
+Normal query (alice): [(1, 'alice')]
+Injection attempt string: ' OR '1'='1
+Running SQL (vulnerable): SELECT id, username FROM users WHERE username = '' OR '1'='1'
+Result of injection on vulnerable code: [(1, 'alice'), (2, 'bob')]

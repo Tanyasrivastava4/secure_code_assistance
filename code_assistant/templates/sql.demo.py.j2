@@ -1,0 +1,13 @@
+# Fallback template for safe SQL demo
+import sqlite3
+
+conn = sqlite3.connect("demo.db")
+c = conn.cursor()
+
+# Safe query using parameters to prevent SQL injection
+username = "demo_user"
+c.execute("SELECT * FROM users WHERE username = ?", (username,))
+rows = c.fetchall()
+print(rows)
+
+conn.close()
