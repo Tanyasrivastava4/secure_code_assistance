@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+click
+requests
+jinja2
+bandit
+=======
+torch
+transformers
+fastapi
+uvicorn[standard]
+>>>>>>> 24ff1bb30b6f34f384a429fd0e2477e218f02db2
